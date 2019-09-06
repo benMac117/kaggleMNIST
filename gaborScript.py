@@ -10,9 +10,9 @@ def process(img, kern):
     return cv2.filter2D(img, cv2.CV_8UC3, kern)
 
 trainDataRaw = np.genfromtxt('/home/ben/Data/kaggle/digitRecogniser/train.csv', skip_header=1, delimiter=",")
-testData = np.genfromtxt('/home/ben/Data/kaggle/digitRecogniser/test.csv', skip_header=1, delimiter=",")
-trainLabels = trainDataRaw[:100,0].astype(str)
-trainData = trainDataRaw[:100,1:]
+testData = np.genfromtxt('/home/ben/Data/kaggle/digitRecogniser/test.csv', skip_header=1, delimiter=",")[:]
+trainLabels = trainDataRaw[:,0].astype(int)
+trainData = trainDataRaw[:,1:]
 del trainDataRaw
 
 pipe = Pipeline([
@@ -57,3 +57,4 @@ for i, img in enumerate(testImages):
 
 pipe.fit(np.array(trainingGaborActivations), trainLabels)
 predictedLabels = pipe.predict(np.array(testingGaborActivations))
+np.savetxt('tmp.csv', list(enumerate(predictedLabels,1)), fmt='%d', delimiter=',', header='ImageId,Label', comments='')
